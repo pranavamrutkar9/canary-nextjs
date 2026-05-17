@@ -1,4 +1,4 @@
-import { Schema, model, models, Document, Model, Types } from "mongoose";
+import { Schema, model, models, Document, Model, Types, Query } from "mongoose";
 import Event from "./event.model";
 
 /**
@@ -37,6 +37,25 @@ BookingSchema.pre<IBooking>("save", async function () {
     throw new Error(`Referenced Event with ID ${this.eventId} does not exist.`);
   }
 });
+
+// Helper function to validate event reference during update queries
+async function validateEventReference(this: Query<unknown, unknown>) {
+  const update = this.getUpdate() as Record<string, unknown> | null;
+  if (!update) return;
+
+  const $set = update.$set as Record<string, unknown> | undefined;
+  const eventId = update.eventId ?? $set?.eventId;
+
+  if (eventId) {
+    const eventExists = await Event.findById(eventId);
+    if (!eventExists) {
+      throw new Error(`Referenced Event with ID ${String(eventId)} does not exist.`);
+    }
+  }
+}
+
+BookingSchema.pre("findOneAndUpdate", validateEventReference);
+BookingSchema.pre("updateOne", validateEventReference);
 
 const Booking = (models.Booking as Model<IBooking>) || model<IBooking>("Booking", BookingSchema);
 

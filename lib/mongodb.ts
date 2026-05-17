@@ -1,13 +1,5 @@
 import mongoose, { Mongoose } from "mongoose";
 
-const MONGODB_URI: string = process.env.MONGODB_URI || "";
-
-if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env"
-  );
-}
-
 /**
  * Interface defining the structure of our cached Mongoose connection.
  */
@@ -41,6 +33,14 @@ if (!globalThis.mongooseCache) {
  * @returns {Promise<Mongoose>} The active Mongoose connection instance.
  */
 export async function connectToDatabase(): Promise<Mongoose> {
+  const MONGODB_URI: string = process.env.MONGODB_URI || "";
+
+  if (!MONGODB_URI) {
+    throw new Error(
+      "Please define the MONGODB_URI environment variable inside .env"
+    );
+  }
+
   // Return the existing connection if it is already established.
   if (cached.conn) {
     return cached.conn;
