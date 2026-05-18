@@ -7,11 +7,10 @@ interface RouteParams {
 }
 
 /**
- * GET handler to fetch event details by its unique slug.
- * 
- * @param req - The NextRequest instance.
- * @param context - Contains the dynamic route parameters (slug promise).
- * @returns {Promise<NextResponse>} JSON response containing the matching event or error details.
+ * Fetches an event by its slug and returns a JSON response.
+ *
+ * @param params - A promise that resolves to the route parameters object containing `slug`.
+ * @returns A JSON response containing the matching `event` on success; on failure a JSON object with a `message` and, when available, an `error` field describing the problem.
  */
 export async function GET(
   req: NextRequest,

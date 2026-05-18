@@ -21,6 +21,13 @@ interface FormData {
     image: File | null;
 }
 
+/**
+ * Render the "Create New Event" page with a controlled form for creating events.
+ *
+ * The component manages local form state (including dynamic tags and agenda), supports image selection with a preview, and submits form data to the API endpoint to create an event.
+ *
+ * @returns The React element that renders the event creation form and its UI controls.
+ */
 export default function CreateEventPage() {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);

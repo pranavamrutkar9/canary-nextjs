@@ -5,6 +5,14 @@ import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 
 cloudinary.config({ secure: true });
 
+/**
+ * Create a new Event from a request body, accepting either JSON or multipart/form-data and optionally uploading an image to Cloudinary.
+ *
+ * Parses JSON bodies directly. For multipart form submissions, reads form fields, accepts an `image` File (uploaded to Cloudinary and its `secure_url` injected into the payload), and attempts to parse `tags` and `agenda` when they are JSON array strings. Persists the resulting event to the database and returns a JSON response indicating success or failure.
+ *
+ * @param req - NextRequest containing either an `application/json` body or `multipart/form-data`. For form-data, supported fields include `image` (file or URL), `tags` and `agenda` (may be JSON array strings).
+ * @returns A JSON HTTP response with a success message and the created event on success, or an error message on failure.
+ */
 export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
@@ -74,6 +82,11 @@ export async function POST(req: NextRequest) {
   }
 }
 
+/**
+ * Fetches all events from the database sorted by newest first.
+ *
+ * @returns A JSON response with `{ message: "Events Fetched Successfully", events }` on success, or `{ message: "Failed to Fetch Events", error }` on failure.
+ */
 export async function GET() {
   try {
     await connectToDatabase();
